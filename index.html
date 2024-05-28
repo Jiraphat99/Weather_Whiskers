@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Whiskers🐾</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <div class="weatherApp">
+      <div class="wrapper">
+        <div class="currentCity-section">
+          <h2 class="current-city" id="current-city">Unknown</h2>
+          <span>
+            <div class="currentCountry" id="currentCountry">Unknown</div>
+          </span>
+          <span class="current-date" id="current-date"
+            >18 September 2023 10:56 PM</span
+          >
+          <div class="weather-icons">
+            <div class="weatherIcon-container">
+              <div class="icon-column">
+                <img id="weather-icon" src="src/image/map.png" />
+              </div>
+              <div class="temperature-feellike-wrapper">
+                <div class="currentTemperature-container">
+                  <span class="currentTemperature" id="currentTemperature"
+                    >0</span
+                  >
+                  <span class="currentTemperature-unit">°</span>
+                </div>
+                <div class="currentFeellike">
+                  <span class="feelLike-title">Feel like</span>
+                  <span class="feelLike-value" id="feelLike-value">0</span>
+                  <span class="feelLike-unit" id="feelLike-unit">°C</span>
+                </div>
+                <div class="currentSky-container">
+                  <span class="currentSky" id="currentSky">Unknown</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="day_info">
+            <span class="content">
+              <img
+                src="src/image/Humidity.png"
+                alt=""
+                class="currentInfo-icon"
+              />
+              <div class="info">
+                <div class="title">HUMIDITY</div>
+                <span class="value" id="humidity">0</span>
+              </div>
+            </span>
+            <span class="content">
+              <img src="src/image/Wind.png" alt="" class="currentInfo-icon" />
+              <div class="info">
+                <div class="title">WIND</div>
+                <span class="value" id="wind-speed">0</span>
+              </div>
+            </span>
+            <span class="content">
+              <img src="src/image/Rainy.png" alt="" class="currentInfo-icon" />
+              <div class="info">
+                <div class="title">RAIN</div>
+                <span class="value" id="rain">0</span>
+              </div>
+            </span>
+          </div>
+        </div>
+        <div class="content_section">
+          <div class="list_content">
+            <form id="search-form">
+              <input
+                type="search"
+                placeholder="Enter a city..."
+                required
+                class="search-input"
+                id="search-input"
+              />
+              <input type="submit" value="Search" class="search-button" />
+            </form>
+            <div class="season-container">
+              <img
+                class="season-icon"
+                id="season-icon"
+                src="src/image/map.png"
+              />
+              <h2 class="season-title" id="season-title">Unknown</h2>
+              <div class="selectedDate-container" id="selectedDate-container">
+                <span class="selectedDate-minTemp" id="selectedDate-minTemp"
+                  >2°</span
+                >
+                <span>|</span>
+                <span class="selectedDate-maxTemp" id="selectedDate-maxTemp"
+                  >2°</span
+                >
+              </div>
+            </div>
+            <div class="thisweek-section">
+              <div class="thisweek-title">NEXT 7 DAYS</div>
+              <ul>
+                <li>
+                  <img
+                    id="weather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+                <li>
+                  <img
+                    id="forecastweather-icon"
+                    src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png"
+                  />
+                  <span>Sat</span>
+                  <span class="day_temp">23°C</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p>
+        Open Source Code by
+        <a href="https://github.com/Jiraphat99/WeatherApp" target="_blank"
+          >Jirapat Wonganan</a
+        >
+      </p>
+    </footer>
+    <script src="javascript.js"></script>
+  </body>
+</html>
