@@ -103,6 +103,8 @@ function updateWeatherDetails(data) {
   } else if (description.includes("snow")) {
     weatherIcon = "Snow.png";
   } else if (description.includes("mist")) {
+    weatherIcon = "Shower rain.png";
+  } else if (description.includes("drizzle")) {
     weatherIcon = "Mist.png";
   } else {
     weatherIcon = "default.png";
