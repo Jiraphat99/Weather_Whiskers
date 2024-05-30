@@ -59,11 +59,31 @@ function fetchCityWeather(city) {
     .then((response) => {
       const weatherData = response.data;
       updateWeatherDetails(weatherData);
+
+      const lat = weatherData.coordinates.latitude;
+      const lon = weatherData.coordinates.longitude;
+      fetchCityForecast(lat, lon, apiKey);
     })
     .catch((error) => {
       console.error("Error fetching weather data:", error);
       alert("No location found. Please try again. 🐾");
       resetWeatherDetails();
+    });
+}
+
+// Function to fetch forecast data
+function fetchCityForecast(lat, lon, apiKey) {
+  const apiUrl = `https://api.shecodes.io/weather/v1/forecast?lat=${lat}&lon=${lon}&key=${apiKey}`;
+
+  axios
+    .get(apiUrl)
+    .then((response) => {
+      const forecastData = response.data.daily;
+      updateForecastDetails(forecastData);
+    })
+    .catch((error) => {
+      console.error("Error fetching forecast data:", error);
+      resetForecastDetails();
     });
 }
 
@@ -111,6 +131,32 @@ function updateWeatherDetails(data) {
   }
 
   document.getElementById("weather-icon").src = `src/image/${weatherIcon}`;
+
+  // Reset thisweek-title
+  document.querySelector(".thisweek-title").textContent = "NEXT 7 DAYS";
+}
+
+// Function to update forecast details on the page
+function updateForecastDetails(data) {
+  const forecastContainer = document.querySelector(".thisweek-section ul");
+  forecastContainer.innerHTML = "";
+
+  data.forEach((day) => {
+    const dayElement = document.createElement("li");
+
+    const date = new Date(day.time * 1000);
+    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
+
+    const iconUrl = `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${day.condition.icon}.png`;
+
+    dayElement.innerHTML = `
+      <img src="${iconUrl}" />
+      <span>${dayName}</span>
+      <span class="day_temp">${Math.round(day.temperature.maximum)}°C</span>
+    `;
+
+    forecastContainer.appendChild(dayElement);
+  });
 }
 
 // Function to reset weather details to default
@@ -124,6 +170,58 @@ function resetWeatherDetails() {
   document.getElementById("currentSky").textContent = "Unknown";
 
   document.getElementById("weather-icon").src = "src/image/404 Not Found.png";
+
+  resetForecastDetails();
+}
+
+// Function to reset forecast details to default
+function resetForecastDetails() {
+  const forecastContainer = document.querySelector(".thisweek-section ul");
+  forecastContainer.innerHTML = "";
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date().getDay();
+
+  for (let i = 0; i < 7; i++) {
+    const dayIndex = (today + i) % 7;
+    const dayName = daysOfWeek[dayIndex];
+    const dayElement = document.createElement("li");
+
+    dayElement.innerHTML = `
+      <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png" />
+      <span>${dayName}</span>
+      <span class="day_temp">0°C</span>
+    `;
+
+    forecastContainer.appendChild(dayElement);
+  }
+
+  document.querySelector(".thisweek-title").textContent = "Unknown";
+}
+
+// Function to initialize forecast details on first load
+function initializeForecastDetails() {
+  const forecastContainer = document.querySelector(".thisweek-section ul");
+  forecastContainer.innerHTML = "";
+
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date().getDay();
+
+  for (let i = 0; i < 7; i++) {
+    const dayIndex = (today + i) % 7;
+    const dayName = daysOfWeek[dayIndex];
+    const dayElement = document.createElement("li");
+
+    dayElement.innerHTML = `
+      <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png" />
+      <span>${dayName}</span>
+      <span class="day_temp">0°C</span>
+    `;
+
+    forecastContainer.appendChild(dayElement);
+  }
+
+  document.querySelector(".thisweek-title").textContent = "NEXT 7 DAYS";
 }
 
 // DOMContentLoaded event listener
@@ -131,6 +229,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentDate = new Date();
   const formattedDate = formatDate(currentDate);
   document.querySelector(".current-date").textContent = formattedDate;
+
+  initializeForecastDetails();
 
   const searchForm = document.getElementById("search-form");
   searchForm.addEventListener("submit", (event) => {
