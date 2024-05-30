@@ -245,6 +245,16 @@ footer a:hover {
   text-decoration: underline;
 }
 
+/* Season Title */
+.season-title {
+  font-size: 20px;
+  font-weight: 300;
+  position: absolute;
+  z-index: 1;
+  top: 30px; /* Adjust top positioning */
+  left: 50%; /* Adjust left positioning */
+}
+
 /* Season Container */
 .season-container {
   color: #fff;
@@ -260,12 +270,13 @@ footer a:hover {
   position: relative;
 }
 
+/* Season Icon */
 .season-icon {
   width: 120px;
-  position: relative;
-  top: 60px;
-  right: 10px;
-  transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  left: 30%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
 
@@ -352,7 +363,7 @@ footer a:hover {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 10px;
   margin-top: 50px;
   margin-right: 20px;
   background-color: #bdd5ff;
@@ -369,13 +380,12 @@ footer a:hover {
 .thisweek-section ul li {
   font-size: 12px;
   background-color: #fff;
-  padding: 30px 5px;
   box-shadow: 5px 5px 8px rgba(65, 114, 197, 0.25);
   display: flex;
   flex-direction: column;
   align-items: center;
   border-radius: 2rem;
-  transition: all 0.3s ease-in;
+  transition: transform 0.3s ease-in;
 }
 
 .thisweek-section ul li:hover {
@@ -402,18 +412,17 @@ footer a:hover {
   left: 70px;
 }
 
-.season-title {
-  font-size: 20px;
-  font-weight: 300;
+.selectedDate-container {
   position: relative;
-  z-index: 1;
-  margin-top: -20px;
-  left: 0px;
+  top: 10%;
+  left: 50px;
+  transform: translateY(-50%);
 }
 
-.selectedDate-container {
-  position: absolute;
-  top: 60%;
-  right: 80px;
-  transform: translateY(-50%);
+.day_temp {
+  font-size: 10px; /* Adjust font size as needed */
+}
+
+.day-title {
+  font-size: 12px;
 }

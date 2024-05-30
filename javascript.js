@@ -49,6 +49,21 @@ function formatDate(date) {
   return `${formattedDay}, ${day} ${formattedMonth} ${year} ${hours}:${minutes} ${amPM}`;
 }
 
+// Function to get the current day of the week
+function getCurrentDayOfWeek() {
+  const date = new Date();
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return days[date.getDay()];
+}
+
 // Function to fetch city weather information
 function fetchCityWeather(city) {
   const apiKey = "097tobe889c8b3ef74487a6e720a70b1";
@@ -80,6 +95,10 @@ function fetchCityForecast(lat, lon, apiKey) {
     .then((response) => {
       const forecastData = response.data.daily;
       updateForecastDetails(forecastData);
+
+      // Update min and max temperature for selected date (today)
+      const todayForecast = forecastData[0];
+      updateSelectedDateTemperatures(todayForecast);
     })
     .catch((error) => {
       console.error("Error fetching forecast data:", error);
@@ -141,7 +160,8 @@ function updateForecastDetails(data) {
   const forecastContainer = document.querySelector(".thisweek-section ul");
   forecastContainer.innerHTML = "";
 
-  data.forEach((day) => {
+  // Start from the second element (tomorrow)
+  data.slice(1).forEach((day) => {
     const dayElement = document.createElement("li");
 
     const date = new Date(day.time * 1000);
@@ -152,11 +172,22 @@ function updateForecastDetails(data) {
     dayElement.innerHTML = `
       <img src="${iconUrl}" />
       <span>${dayName}</span>
+      <span class="day_temp">${Math.round(day.temperature.minimum)}°C</span>
       <span class="day_temp">${Math.round(day.temperature.maximum)}°C</span>
     `;
 
     forecastContainer.appendChild(dayElement);
   });
+}
+
+// Function to update selected date temperatures
+function updateSelectedDateTemperatures(data) {
+  document.getElementById("selectedDate-minTemp").textContent = `${Math.round(
+    data.temperature.minimum
+  )}°C`;
+  document.getElementById("selectedDate-maxTemp").textContent = `${Math.round(
+    data.temperature.maximum
+  )}°C`;
 }
 
 // Function to reset weather details to default
@@ -183,13 +214,14 @@ function resetForecastDetails() {
   const today = new Date().getDay();
 
   for (let i = 0; i < 7; i++) {
-    const dayIndex = (today + i) % 7;
+    const dayIndex = (today + i + 1) % 7;
     const dayName = daysOfWeek[dayIndex];
     const dayElement = document.createElement("li");
 
     dayElement.innerHTML = `
       <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png" />
       <span>${dayName}</span>
+      <span class="day_temp">0°C</span>
       <span class="day_temp">0°C</span>
     `;
 
@@ -208,13 +240,14 @@ function initializeForecastDetails() {
   const today = new Date().getDay();
 
   for (let i = 0; i < 7; i++) {
-    const dayIndex = (today + i) % 7;
+    const dayIndex = (today + i + 1) % 7;
     const dayName = daysOfWeek[dayIndex];
     const dayElement = document.createElement("li");
 
     dayElement.innerHTML = `
       <img src="http://shecodes-assets.s3.amazonaws.com/api/weather/icons/clear-sky-day.png" />
       <span>${dayName}</span>
+      <span class="day_temp">0°C</span>
       <span class="day_temp">0°C</span>
     `;
 
@@ -230,12 +263,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const formattedDate = formatDate(currentDate);
   document.querySelector(".current-date").textContent = formattedDate;
 
+  const currentDayOfWeek = getCurrentDayOfWeek();
+  document.querySelector(".season-title").textContent = currentDayOfWeek;
+
   initializeForecastDetails();
 
-  const searchForm = document.getElementById("search-form");
-  searchForm.addEventListener("submit", (event) => {
+  document.getElementById("search-form").addEventListener("submit", (event) => {
     event.preventDefault();
     const userInput = document.getElementById("search-input").value;
     fetchCityWeather(userInput);
   });
+});
+
+// Function to update weather information for the selected day
+function updateSelectedDayInfo(dayInfo) {
+  // Extract relevant information from the dayInfo object
+  const { dayName, minTemp, maxTemp } = dayInfo;
+
+  // Update DOM elements with the extracted information
+  document.getElementById("season-title").textContent = dayName;
+  document.getElementById("selectedDate-minTemp").textContent = `${minTemp}°`;
+  document.getElementById("selectedDate-maxTemp").textContent = `${maxTemp}°`;
+}
+
+// Function to initialize event listeners for forecast days
+function initializeForecastDayListeners() {
+  // Get all forecast day elements
+  const forecastDays = document.querySelectorAll(".thisweek-section ul li");
+
+  // Add click event listener to each forecast day
+  forecastDays.forEach((day, index) => {
+    // Extract relevant information for the day
+    const dayName = "Day " + (index + 1); // Example day name
+    const minTemp = 10; // Example minimum temperature
+    const maxTemp = 20; // Example maximum temperature
+
+    // Add click event listener
+    day.addEventListener("click", () => {
+      // Call the function to update weather information for the selected day
+      updateSelectedDayInfo({ dayName, minTemp, maxTemp });
+    });
+  });
+}
+
+// Initialize event listeners for forecast days when the DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  initializeForecastDayListeners();
 });
