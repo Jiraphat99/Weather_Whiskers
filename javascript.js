@@ -126,6 +126,10 @@ function updateWeatherDetails(data) {
   document.getElementById("currentSky").textContent =
     data.condition.description;
 
+  // Update cloudiness based on weather condition
+  const cloudiness = calculateCloudiness(data.condition.description);
+  document.getElementById("cloudiness").textContent = cloudiness;
+
   // Update weather icon based on condition
   let weatherIcon = "";
   const description = data.condition.description.toLowerCase();
@@ -153,6 +157,16 @@ function updateWeatherDetails(data) {
 
   // Reset thisweek-title
   document.querySelector(".thisweek-title").textContent = "NEXT 7 DAYS";
+}
+
+// Function to calculate cloudiness based on weather condition
+function calculateCloudiness(description) {
+  // Estimate cloudiness based on weather condition description
+  if (description.includes("cloud")) {
+    return "Cloudy";
+  } else {
+    return "Clear";
+  }
 }
 
 // Function to create a forecast item with the specified structure
@@ -211,6 +225,9 @@ function resetWeatherDetails() {
   document.getElementById("currentSky").textContent = "Unknown";
 
   document.getElementById("weather-icon").src = "src/image/404 Not Found.png";
+
+  // Reset cloudiness to "0"
+  document.getElementById("cloudiness").textContent = "0";
 
   resetForecastDetails();
 }
@@ -298,15 +315,13 @@ function updateSelectedDayInfo(dayInfo) {
 
 // Function to initialize event listeners for forecast days
 function initializeForecastDayListeners() {
-  // Get all forecast day elements
   const forecastDays = document.querySelectorAll(".thisweek-section ul li");
 
-  // Add click event listener to each forecast day
   forecastDays.forEach((day, index) => {
     // Extract relevant information for the day
     const dayName = "Day " + (index + 1);
-    const minTemp = 10;
-    const maxTemp = 20;
+    const minTemp = 0;
+    const maxTemp = 0;
 
     // Add click event listener
     day.addEventListener("click", () => {
