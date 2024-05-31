@@ -155,6 +155,29 @@ function updateWeatherDetails(data) {
   document.querySelector(".thisweek-title").textContent = "NEXT 7 DAYS";
 }
 
+// Function to create a forecast item with the specified structure
+function createForecastItem(day) {
+  const forecastDate = new Date(day.time * 1000); // Convert UNIX timestamp to JavaScript Date
+  const dayOfWeek = forecastDate.toLocaleDateString("en-US", {
+    weekday: "short",
+  });
+  const minTemp = Math.round(day.temperature.minimum);
+  const maxTemp = Math.round(day.temperature.maximum);
+  const iconUrl = `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${day.condition.icon}.png`;
+
+  const listItem = document.createElement("li");
+  listItem.classList.add("thisweek-item");
+
+  listItem.innerHTML = `
+    <img src="${iconUrl}" alt="${day.condition.description}" />
+    <span>${dayOfWeek}</span>
+    <span class="day_temp">${minTemp}°C</span>
+    <span class="day_temp">${maxTemp}°C</span>
+  `;
+
+  return listItem;
+}
+
 // Function to update forecast details on the page
 function updateForecastDetails(data) {
   const forecastContainer = document.querySelector(".thisweek-section ul");
@@ -162,21 +185,8 @@ function updateForecastDetails(data) {
 
   // Start from the second element (tomorrow)
   data.slice(1).forEach((day) => {
-    const dayElement = document.createElement("li");
-
-    const date = new Date(day.time * 1000);
-    const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
-
-    const iconUrl = `http://shecodes-assets.s3.amazonaws.com/api/weather/icons/${day.condition.icon}.png`;
-
-    dayElement.innerHTML = `
-      <img src="${iconUrl}" />
-      <span>${dayName}</span>
-      <span class="day_temp">${Math.round(day.temperature.minimum)}°C</span>
-      <span class="day_temp">${Math.round(day.temperature.maximum)}°C</span>
-    `;
-
-    forecastContainer.appendChild(dayElement);
+    const forecastItem = createForecastItem(day);
+    forecastContainer.appendChild(forecastItem);
   });
 }
 
@@ -294,13 +304,12 @@ function initializeForecastDayListeners() {
   // Add click event listener to each forecast day
   forecastDays.forEach((day, index) => {
     // Extract relevant information for the day
-    const dayName = "Day " + (index + 1); // Example day name
-    const minTemp = 10; // Example minimum temperature
-    const maxTemp = 20; // Example maximum temperature
+    const dayName = "Day " + (index + 1);
+    const minTemp = 10;
+    const maxTemp = 20;
 
     // Add click event listener
     day.addEventListener("click", () => {
-      // Call the function to update weather information for the selected day
       updateSelectedDayInfo({ dayName, minTemp, maxTemp });
     });
   });
@@ -310,3 +319,47 @@ function initializeForecastDayListeners() {
 document.addEventListener("DOMContentLoaded", () => {
   initializeForecastDayListeners();
 });
+
+// Function to update selected day's weather details
+function updateSelectedDayWeather(day) {
+  const forecastDate = new Date(day.time * 1000); // Convert UNIX timestamp to JavaScript Date
+  const dayOfWeek = forecastDate.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
+  document.getElementById("season-title").textContent = dayOfWeek;
+  document.getElementById("selectedDate-minTemp").textContent = `${Math.round(
+    day.temperature.minimum
+  )}°`;
+  document.getElementById("selectedDate-maxTemp").textContent = `${Math.round(
+    day.temperature.maximum
+  )}°`;
+}
+
+// Function to add event listeners to forecast items
+function addForecastEventListeners() {
+  const forecastItems = document.querySelectorAll(".thisweek-item");
+  forecastItems.forEach((item, index) => {
+    item.addEventListener("click", () => {
+      const forecastData = window.forecastData;
+      updateSelectedDayWeather(forecastData[index]);
+    });
+  });
+}
+
+// Modify the updateForecastDetails function to include the new function call
+function updateForecastDetails(forecast) {
+  const forecastContainer = document.querySelector(".thisweek-section ul");
+  forecastContainer.innerHTML = ""; // Clear existing content
+
+  forecast.forEach((day) => {
+    const listItem = createForecastItem(day);
+    forecastContainer.appendChild(listItem);
+  });
+
+  // Store forecast data globally for easy access in event listeners
+  window.forecastData = forecast;
+
+  // Add event listeners to the forecast items
+  addForecastEventListeners();
+}
